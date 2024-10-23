@@ -5,3 +5,4 @@ dist/
 build/
 .idea/
 storybook.log
+public/
