@@ -1,93 +1,137 @@
 import React from 'react';
-import { Card, CardMedia, CardContent, Typography, Box, IconButton, styled } from '@mui/material';
+import { Card, CardMedia, Box, Typography, styled } from '@mui/material';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import MusicNoteIcon from '@mui/icons-material/MusicNote'; // TikTok
+import ImageIcon from '@mui/icons-material/Image';
+import VideoFileIcon from '@mui/icons-material/VideoFile';
+import SlowMotionVideoIcon from '@mui/icons-material/SlowMotionVideo';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import InstagramIcon from '@mui/icons-material/Instagram';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
+export type SocialNetwork = 'instagram' | 'facebook' | 'youtube' | 'tiktok';
+export type PostType = 'image' | 'video' | 'reel';
 
 export interface SocialCardProps {
-    /**
-     * Image URL for the post
-     */
     imageUrl: string;
-    /**
-     * Account name
-     */
     accountName: string;
-    /**
-     * Number of likes
-     */
+    socialNetwork: SocialNetwork;
+    postType: PostType;
     likes?: number;
-    /**
-     * Number of comments
-     */
     comments?: number;
-    /**
-     * Alt text for the image
-     */
+    views?: number;
     imageAlt?: string;
-    /**
-     * Card width
-     */
     width?: number | string;
-    /**
-     * Optional click handler
-     */
     onClick?: () => void;
 }
 
 const StyledCard = styled(Card)(({ theme }) => ({
-    borderRadius: theme.spacing(2),
-    maxWidth: '100%',
+    borderRadius: '16px',
+    overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
-    boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
 }));
 
-const AccountBox = styled(Box)(({ theme }) => ({
+const CardOverlay = styled(Box)({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.4) 100%)',
+});
+
+const TopBar = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: theme.spacing(2),
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(1),
-    padding: theme.spacing(2),
+    color: 'white',
+    zIndex: 1,
 }));
 
-const StatsBox = styled(Box)(({ theme }) => ({
+const BottomBar = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: theme.spacing(2),
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'flex-start',
     gap: theme.spacing(2),
-    padding: `0 ${theme.spacing(2)}`,
+    color: 'white',
+    zIndex: 1,
 }));
 
-const StatItem = styled(Box)(({ theme }) => ({
+const MetricItem = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(0.5),
-    color: theme.palette.text.secondary,
 }));
+
+const PostTypeIcon = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+    color: 'white',
+    zIndex: 1,
+}));
+
+const getSocialIcon = (network: SocialNetwork) => {
+    switch (network) {
+        case 'facebook':
+            return <FacebookIcon />;
+        case 'youtube':
+            return <YouTubeIcon />;
+        case 'tiktok':
+            return <MusicNoteIcon />;
+        default:
+            return <InstagramIcon />;
+    }
+};
+
+const getPostTypeIcon = (type: PostType) => {
+    switch (type) {
+        case 'video':
+            return <VideoFileIcon />;
+        case 'reel':
+            return <SlowMotionVideoIcon />;
+        default:
+            return <ImageIcon />;
+    }
+};
+
+const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+};
 
 export const SocialCard: React.FC<SocialCardProps> = ({
                                                           imageUrl,
                                                           accountName,
+                                                          socialNetwork,
+                                                          postType,
                                                           likes = 0,
                                                           comments = 0,
-                                                          imageAlt = "Post image",
+                                                          views = 0,
+                                                          imageAlt = "Social media post",
                                                           width = 360,
                                                           onClick,
                                                       }) => {
-    const formatNumber = (num: number): string => {
-        if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K';
-        }
-        return num.toString();
-    };
-
     return (
-        <StyledCard sx={{ width }} onClick={onClick}>
-            <AccountBox>
-                <InstagramIcon />
-                <Typography variant="subtitle1" fontWeight="medium">
-                    {accountName}
-                </Typography>
-            </AccountBox>
-
+        <StyledCard sx={{ width, position: 'relative' }} onClick={onClick}>
             <CardMedia
                 component="img"
                 image={imageUrl}
@@ -98,27 +142,43 @@ export const SocialCard: React.FC<SocialCardProps> = ({
                 }}
             />
 
-            <CardContent sx={{ pb: 2 }}>
-                <StatsBox>
-                    <StatItem>
-                        <IconButton size="small" color="default">
-                            <FavoriteIcon fontSize="small" />
-                        </IconButton>
-                        <Typography variant="body2">
-                            {formatNumber(likes)}
-                        </Typography>
-                    </StatItem>
+            <CardOverlay />
 
-                    <StatItem>
-                        <IconButton size="small" color="default">
-                            <ChatBubbleOutlineIcon fontSize="small" />
-                        </IconButton>
+            <TopBar>
+                {getSocialIcon(socialNetwork)}
+                <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                    {accountName}
+                </Typography>
+            </TopBar>
+
+            <PostTypeIcon>
+                {getPostTypeIcon(postType)}
+            </PostTypeIcon>
+
+            <BottomBar>
+                <MetricItem>
+                    <FavoriteIcon fontSize="small" />
+                    <Typography variant="body2">
+                        {formatNumber(likes)}
+                    </Typography>
+                </MetricItem>
+
+                <MetricItem>
+                    <ChatBubbleOutlineIcon fontSize="small" />
+                    <Typography variant="body2">
+                        {formatNumber(comments)}
+                    </Typography>
+                </MetricItem>
+
+                {(postType === 'video' || postType === 'reel') && (
+                    <MetricItem>
+                        <VisibilityIcon fontSize="small" />
                         <Typography variant="body2">
-                            {formatNumber(comments)}
+                            {formatNumber(views)}
                         </Typography>
-                    </StatItem>
-                </StatsBox>
-            </CardContent>
+                    </MetricItem>
+                )}
+            </BottomBar>
         </StyledCard>
     );
 };

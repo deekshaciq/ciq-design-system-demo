@@ -6,9 +6,22 @@ const meta = {
     component: SocialCard,
     parameters: {
         layout: 'centered',
+        backgrounds: {
+            default: 'light',
+        },
     },
     tags: ['autodocs'],
     argTypes: {
+        socialNetwork: {
+            control: 'select',
+            options: ['instagram', 'facebook', 'youtube', 'tiktok'],
+            description: 'Social network platform',
+        },
+        postType: {
+            control: 'select',
+            options: ['image', 'video', 'reel'],
+            description: 'Type of post',
+        },
         imageUrl: {
             control: 'text',
             description: 'URL of the post image',
@@ -25,51 +38,103 @@ const meta = {
             control: 'number',
             description: 'Number of comments',
         },
+        views: {
+            control: 'number',
+            description: 'Number of views (for video/reel)',
+        },
         width: {
             control: 'number',
             description: 'Width of the card in pixels',
         },
-        onClick: { action: 'clicked' },
     },
 } satisfies Meta<typeof SocialCard>;
 
 export default meta;
 type Story = StoryObj<typeof SocialCard>;
 
-export const Default: Story = {
+export const InstagramImage: Story = {
     args: {
-        imageUrl: '/racing-cars.png', // You'll need to add this image to your public folder
+        imageUrl: '/racing-cars2.png',
         accountName: 'Account Name',
+        socialNetwork: 'instagram',
+        postType: 'image',
         likes: 3900,
         comments: 17,
         width: 360,
     },
 };
 
-export const HighEngagement: Story = {
+export const InstagramReel: Story = {
     args: {
-        imageUrl: '/racing-cars.png',
-        accountName: 'Popular Account',
-        likes: 125000,
-        comments: 1420,
+        imageUrl: '/racing-cars2.png',
+        accountName: 'Reels Account',
+        socialNetwork: 'instagram',
+        postType: 'reel',
+        likes: 12500,
+        comments: 342,
+        views: 45000,
         width: 360,
     },
 };
 
-export const NoEngagement: Story = {
+export const FacebookVideo: Story = {
     args: {
-        imageUrl: '/racing-cars.png',
-        accountName: 'New Account',
-        likes: 0,
-        comments: 0,
+        imageUrl: '/racing-cars2.png',
+        accountName: 'Facebook Page',
+        socialNetwork: 'facebook',
+        postType: 'video',
+        likes: 8700,
+        comments: 234,
+        views: 25000,
+        width: 360,
+    },
+};
+
+export const YouTubeVideo: Story = {
+    args: {
+        imageUrl: '/racing-cars2.png',
+        accountName: 'YouTube Channel',
+        socialNetwork: 'youtube',
+        postType: 'video',
+        likes: 15000,
+        comments: 890,
+        views: 150000,
+        width: 360,
+    },
+};
+
+export const TikTokVideo: Story = {
+    args: {
+        imageUrl: '/racing-cars2.png',
+        accountName: 'TikTok Creator',
+        socialNetwork: 'tiktok',
+        postType: 'video',
+        likes: 45000,
+        comments: 1200,
+        views: 250000,
+        width: 360,
+    },
+};
+
+export const HighEngagement: Story = {
+    args: {
+        imageUrl: '/racing-cars2.png',
+        accountName: 'Viral Account',
+        socialNetwork: 'instagram',
+        postType: 'reel',
+        likes: 1250000,
+        comments: 14200,
+        views: 5000000,
         width: 360,
     },
 };
 
 export const Wide: Story = {
     args: {
-        imageUrl: '/racing-cars.png',
+        imageUrl: '/racing-cars2.png',
         accountName: 'Wide Layout',
+        socialNetwork: 'instagram',
+        postType: 'image',
         likes: 3900,
         comments: 17,
         width: 480,
