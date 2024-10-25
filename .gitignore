@@ -6,3 +6,5 @@ build/
 .idea/
 storybook.log
 public/
+build-storybook.log
+storybook-static
